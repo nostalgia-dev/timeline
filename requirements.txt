@@ -1,0 +1,6 @@
+nostalgia
+numpy
+preconvert
+preconvert_numpy
+flask
+flask_cors
