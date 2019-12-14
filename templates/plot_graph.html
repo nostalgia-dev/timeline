@@ -267,7 +267,7 @@
       <a id="submitBtn" href="#" onclick="submitForm()" class="btn">Submit</a>
       <!-- <input type="submit"/> -->
       <a href="#" onclick="uncheckAll(event)" class="btn" id="markButton" style="width: 57px;">Unmark</a>
-      {% for group, checked in group_inputs.items() %}
+      {% for group, checked in group_inputs.items() | sort(attribute='0') %}
          <input type="checkbox" id="inp-{{group}}" name="{{group}}" {{checked}}>
          <label for="{{group}}">{{group}}</label>
        {% endfor %}
