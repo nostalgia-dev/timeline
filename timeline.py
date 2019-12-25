@@ -49,7 +49,7 @@ def image():
 
 @app.route("/")
 def root():
-    from nostalgia.base_df import Results, registry
+    from nostalgia.ndf import Results, registry
 
     global last, res
     if res is None:
