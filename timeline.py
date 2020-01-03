@@ -5,7 +5,7 @@ load_entry()
 import time
 import os
 import numpy as np
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, redirect
 from flask_cors import CORS
 
 from plot_graph import plot_graph
@@ -27,6 +27,8 @@ def image():
     global last
     index = request.values["index"]
     html = request.values.get("html")
+    for i in range(10):
+        print("image", index, html)
     if index == "undefined":
         return None
     origin = last.get_original(int(index))
@@ -34,10 +36,12 @@ def image():
     if not fname or fname.endswith("mp4"):
         return None
     fname = fname.replace("file://", "")
+    if html == "1":
+        return '<html><body><img src="/image?index={}" /></body></html>'.format(index)
+    if fname.startswith("http"):
+        return redirect(fname)
     with open(fname, "rb") as f:
         img = f.read()
-        if html == "1":
-            return '<html><body><img src="/image?index={}" /></body></html>'.format(index)
         resp = make_response(img)
         ext = fname.split(".")[-1]
         resp.headers = {"Content-Type": "application/" + ext}
@@ -72,6 +76,7 @@ def root():
                 new = True
         if new:
             res = Results.merge(*[v for k, v in registry.items() if v.df_name != "results"])
+            print("Loaded")
     if start is not None and end is not None:
         last = res.at_time(start, end)
     elif start is not None:
@@ -91,7 +96,13 @@ def root():
         last["sel"] = False
         for name, group in last.groupby("type"):
             mod = 1 if group.shape[0] < max_n else int(group.shape[0] / max_n)
-            last.loc[last.type == name, "sel"] = [x % mod == 0 for x in range(group.shape[0])]
+            try:
+                last.loc[last.type == name, "sel"] = [x % mod == 0 for x in range(group.shape[0])]
+            except Exception as e:
+                print(e)
+                import pdb
+
+                pdb.set_trace()
         last = Results(last[last.sel])
     else:
         last = Results(last)

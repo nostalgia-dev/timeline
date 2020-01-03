@@ -196,7 +196,7 @@
         var parsed = JSON.parse(info);
         var image = ""
         var src = '/image?index=' + index
-        if (parsed.path) {
+        if (parsed.path || parsed.image) {
           image = '<a href="' + src + "&html=1" + '"><img width="600px" src="' + src + '" /></a>'
         }
         ele.innerHTML = info + image;
