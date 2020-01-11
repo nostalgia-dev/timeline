@@ -7,7 +7,20 @@ This repo contains the timeline app for [nostalgia](https://nostalgia-dev.github
     git clone https://github.com/nostalgia-dev/timeline
     pip install -r requirements.txt
 
-Follow the installation instructions in [nostalgia core](https://github.com/nostalgia-dev/core) to get some sources connected.
+Follow the installation instructions in [nostalgia core](https://github.com/nostalgia-dev/nostalgia) to get some sources connected.
+
+Then, make sure you are loading the sources in `~/nostalgia_data/nostalgia_entry.py`.
+
+For example, to load [Fitbit](https://github.com/nostalgia-dev/nostalgia_fitbit) and [Chrome History](https://github.com/nostalgia-dev/nostalgia_chrome) after setting up those sources:
+
+```
+# File contents of ~/nostalgia_data/nostalgia_entry.py below
+from nostalgia.sources.fitbit.heartrate import FitbitHeartrate
+from nostalgia.sources.chrome_history import WebHistory
+
+heartrate = FitbitHeartrate.load(nrows=5)
+web_history = WebHistory.load(nrows=5)
+```
 
 ### Running
 
