@@ -4,3 +4,6 @@ preconvert
 preconvert_numpy
 flask
 flask_cors
+matplotlib
+simplejson
+diskcache
