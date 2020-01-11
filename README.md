@@ -13,7 +13,7 @@ Then, make sure you are loading the sources in `~/nostalgia_data/nostalgia_entry
 
 For example, to load [Fitbit](https://github.com/nostalgia-dev/nostalgia_fitbit) and [Chrome History](https://github.com/nostalgia-dev/nostalgia_chrome) after setting up those sources:
 
-```
+```python
 # File contents of ~/nostalgia_data/nostalgia_entry.py below
 from nostalgia.sources.fitbit.heartrate import FitbitHeartrate
 from nostalgia.sources.chrome_history import WebHistory
