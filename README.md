@@ -7,7 +7,7 @@ This repo contains the timeline app for [nostalgia](https://nostalgia-dev.github
     git clone https://github.com/nostalgia-dev/timeline
     pip install -r requirements.txt
 
-Follow the installation instructions in [nostalgia core](https://github.com/nostalgia-dev/nostalgia) to get some sources connected.
+Next, get some [sources connected](https://github.com/nostalgia-dev/nostalgia#available-data-bindings).
 
 Then, make sure you are loading the sources in `~/nostalgia_data/nostalgia_entry.py`.
 
