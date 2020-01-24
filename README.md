@@ -18,8 +18,8 @@ For example, to load [Fitbit](https://github.com/nostalgia-dev/nostalgia_fitbit)
 from nostalgia.sources.fitbit.heartrate import FitbitHeartrate
 from nostalgia.sources.chrome_history import WebHistory
 
-heartrate = FitbitHeartrate.load(nrows=5)
-web_history = WebHistory.load(nrows=5)
+heartrate = FitbitHeartrate.register()
+web_history = WebHistory.register()
 ```
 
 ### Running
