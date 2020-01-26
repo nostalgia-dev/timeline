@@ -46,8 +46,11 @@ def show_row(row, _id, group_counts, groups):
     x = row
     back, front = c(x.type)
     style = "background-color: " + back + "; color: " + front
-    if x.heartrate_value > 80:
-        style += "; border: 1px solid #ff7f6e"
+    try:
+        if x.heartrate_value > 80:
+            style += "; border: 1px solid #ff7f6e"
+    except AttributeError:
+        pass
     data = {
         "id": _id,
         "content": str(x.title)[:50] if x is not None else "...",
