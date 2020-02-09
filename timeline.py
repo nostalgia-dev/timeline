@@ -1,7 +1,5 @@
 from nostalgia.utils import load_entry
 
-load_entry()
-
 import time
 import os
 import numpy as np
@@ -11,6 +9,8 @@ from flask_cors import CORS
 from plot_graph import plot_graph
 
 from preconvert.output import simplejson as json
+
+from nostalgia.ndf import Results, registry
 
 res = None
 last = None
@@ -53,10 +53,9 @@ def image():
 
 @app.route("/")
 def root():
-    from nostalgia.ndf import Results, registry
-
     global last, res
     if res is None:
+        load_entry()
         res = Results.merge(*[v for k, v in registry.items() if v.df_name != "results"])
     start = request.values.get("start")
     end = request.values.get("end")
@@ -111,6 +110,20 @@ def root():
     return plot_graph(
         last, allowed_types, num_results, start or "365 days ago", end or "1 days ago"
     )
+
+
+@app.route("/sample")
+def sample():
+    global res
+    from nostalgia.sources.ing_banking.mijn_ing import Payments
+    from nostalgia.sources.fitbit.heartrate import FitbitHeartrate
+    from nostalgia.sources.google.gmail import Gmail
+
+    # from nostalgia.sources.chrome_history import WebHistory
+
+    dfs = [x.load_sample_data() for x in [Payments, FitbitHeartrate, Gmail]]
+    res = Results.merge(*dfs)
+    return redirect("/")
 
 
 @app.route("/info")
