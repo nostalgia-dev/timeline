@@ -2,16 +2,30 @@
 
 This repo contains the timeline app for [nostalgia](https://nostalgia-dev.github.io).
 
-### Setup
+### Run the timeline
+
+Using Python:
 
     git clone https://github.com/nostalgia-dev/timeline
     pip install -r requirements.txt
+    python timeline.py
 
-Next, get some [sources connected](https://github.com/nostalgia-dev/nostalgia#available-data-bindings).
+Or using Docker:
 
-Then, make sure you are loading the sources in `~/nostalgia_data/nostalgia_entry.py`.
+    docker build -t nostalgia_timeline .
+    docker-compose up
 
-For example, to load [Fitbit](https://github.com/nostalgia-dev/nostalgia_fitbit) and [Chrome History](https://github.com/nostalgia-dev/nostalgia_chrome) after setting up those sources:
+Then visit http://localhost:5000
+
+Except: it will not really work yet since you should...
+
+### Add your own data
+
+Get some [sources connected](https://github.com/nostalgia-dev/nostalgia#available-data-bindings).
+
+Make sure you are loading those sources in `~/nostalgia_data/nostalgia_entry.py`.
+
+For example, to enable loading [Fitbit](https://github.com/nostalgia-dev/nostalgia_fitbit) and [Chrome History](https://github.com/nostalgia-dev/nostalgia_chrome) after setting up those sources:
 
 ```python
 # File contents of ~/nostalgia_data/nostalgia_entry.py below
@@ -22,13 +36,13 @@ heartrate = FitbitHeartrate.register()
 web_history = WebHistory.register()
 ```
 
-### Running
-
-    python timeline.py
-
 ### Updating the code
 
     git pull
+
+### Developing / Contributing
+
+Suggested to install "Using Python", and then visit http://localhost:5000/sample to see it work without data.
 
 ### Screenshots
 
