@@ -7,3 +7,5 @@ flask_cors
 matplotlib
 simplejson
 diskcache
+auto_extract
+ujson
