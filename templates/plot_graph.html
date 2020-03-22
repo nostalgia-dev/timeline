@@ -173,7 +173,7 @@
       var options = {
         stackSubgroups: false,
         dataAttributes: ["id", "height"],
-        height: "930px",
+        height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 120 + "px",
         groupOrder: function (a, b) {
           return a.value - b.value;
         },
