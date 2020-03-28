@@ -4,9 +4,9 @@ services:
     image: nostalgia_timeline
     container_name: nostalgia_timeline
     ports:
-      - 5000:5000
+      - 5551:5551
     volumes:
       - ~/nostalgia_data:/root/nostalgia_data/
     restart: always
-    environment: 
+    environment:
       - FLASK_ENV=development
