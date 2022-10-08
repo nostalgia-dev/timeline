@@ -1,14 +1,14 @@
 from nostalgia.utils import load_entry
 
+import json
 import time
 import os
 import numpy as np
 from flask import Flask, request, make_response, redirect
 from flask_cors import CORS
+import pandas as pd
 
 from plot_graph import plot_graph
-
-from preconvert.output import simplejson as json
 
 from nostalgia.ndf import Results, registry
 
@@ -60,9 +60,7 @@ def root():
     start = request.values.get("start")
     end = request.values.get("end")
     containing = request.values.get("containing") or request.values.get("q")
-    allowed_types = [
-        k for k, v in request.values.items() if k not in ["start", "end"] and v == "on"
-    ]
+    allowed_types = [k for k, v in request.values.items() if k not in ["start", "end"] and v == "on"]
     if allowed_types:
         new = False
         for tp in allowed_types:
@@ -107,9 +105,7 @@ def root():
         last = Results(last)
     # last = Results(last.tail(1000))
     last.add_heartrate()
-    return plot_graph(
-        last, allowed_types, num_results, start or "365 days ago", end or "1 days ago"
-    )
+    return plot_graph(last, allowed_types, num_results, start or "365 days ago", end or "1 days ago")
 
 
 @app.route("/sample")
@@ -126,6 +122,14 @@ def sample():
     return redirect("/")
 
 
+def safe_convert(x):
+    if isinstance(x, pd.Timestamp):
+        x = str(x)
+    if "int64" in str(type(x)):
+        x = int(x)
+    return x
+
+
 @app.route("/info")
 def info():
     global last
@@ -134,10 +138,10 @@ def info():
         return None
     origin = last.get_original(int(index))
     return json.dumps(
-        {k: v for k, v in dict(origin).items() if not (isinstance(v, float) and np.isnan(v))},
+        {k: safe_convert(v) for k, v in dict(origin).items() if not (isinstance(v, float) and np.isnan(v))},
         indent=4,
     )
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5551)
+    app.run(host="0.0.0.0", port=5551)
