@@ -15,7 +15,7 @@ Or using Docker:
     docker build -t nostalgia_timeline .
     docker-compose up
 
-Then visit http://localhost:5000
+Then visit http://localhost:5551
 
 Except: it will not really work yet since you should...
 
@@ -42,7 +42,7 @@ web_history = WebHistory.register()
 
 ### Developing / Contributing
 
-Suggested to install "Using Python", and then visit http://localhost:5000/sample to see it work without data.
+Suggested to install "Using Python", and then visit http://localhost:5551/sample to see it work without data.
 
 ### Screenshots
 
