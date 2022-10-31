@@ -1,5 +1,6 @@
 from nostalgia.utils import load_entry
 
+import json
 import time
 import os
 import numpy as np
@@ -8,9 +9,9 @@ from flask_cors import CORS
 
 from plot_graph import plot_graph
 
-from preconvert.output import simplejson as json
-
 from nostalgia.ndf import Results, registry
+
+from threading import Thread
 
 res = None
 last = None
@@ -20,6 +21,17 @@ app.secret_key = os.urandom(12)
 CORS(app)
 
 loaded = set()
+
+
+def reload_periodically():
+    while True:
+        time.sleep(60 * 60)
+        for r in registry.values():
+            r.load()
+
+
+tr = Thread(target=reload_periodically, daemon=True)
+tr.start()
 
 
 @app.route("/image")
@@ -60,9 +72,7 @@ def root():
     start = request.values.get("start")
     end = request.values.get("end")
     containing = request.values.get("containing") or request.values.get("q")
-    allowed_types = [
-        k for k, v in request.values.items() if k not in ["start", "end"] and v == "on"
-    ]
+    allowed_types = [k for k, v in request.values.items() if k not in ["start", "end"] and v == "on"]
     if allowed_types:
         new = False
         for tp in allowed_types:
@@ -107,9 +117,7 @@ def root():
         last = Results(last)
     # last = Results(last.tail(1000))
     last.add_heartrate()
-    return plot_graph(
-        last, allowed_types, num_results, start or "365 days ago", end or "1 days ago"
-    )
+    return plot_graph(last, allowed_types, num_results, start or "365 days ago", end or "1 days ago")
 
 
 @app.route("/sample")
@@ -140,4 +148,10 @@ def info():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5551)
+    import sys
+
+    try:
+        port = int(sys.argv[-1])
+    except:
+        port = 5551
+    app.run(host="0.0.0.0", port=port)

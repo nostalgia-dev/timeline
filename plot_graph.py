@@ -1,6 +1,22 @@
+import os
+import sys
 import matplotlib
 import webbrowser
 import jinja2
+from nostalgia.interfaces.chat import ChatInterface
+from nostalgia.utils import load_entry
+
+nostalgia_entry = load_entry()
+
+is_chat: set[str] = set()
+for x in dir(nostalgia_entry):
+    if x.startswith("__"):
+        continue
+    if x[0] == x[0].upper():
+        cls = getattr(nostalgia_entry, x)
+        if ChatInterface in cls.mro():
+            is_chat.add(cls.class_df_name())
+
 
 # tab = {
 #     'tab:blue',
@@ -57,11 +73,12 @@ def show_row(row, _id, group_counts, groups):
         "group": x.type,
         "style": style,
     }
-    if x.type.endswith("chat"):
+    if x.type in is_chat:
         if x.sender == "me":
             data["className"] = "chat right"
         else:
             data["className"] = "chat left"
+
     if x.type not in groups:
         groups[x.type] = {
             "id": x.type,
@@ -79,7 +96,7 @@ def show_row(row, _id, group_counts, groups):
         if x.interval:
             data["end"] = x.end.isoformat()
     except AttributeError:
-        print(_id)
+        print("AttributeError", _id)
         pass
     return data
 
@@ -98,9 +115,7 @@ def plot_graph(res, form_groups, num_results, start=None, end=None):
         for x in sorted(res.type.unique()):
             c(x)
     group_counts = res.type.value_counts()
-    items = json.dumps(
-        [show_row(x, n, group_counts, groups) for n, (_, x) in enumerate(res.iterrows())]
-    )
+    items = json.dumps([show_row(x, n, group_counts, groups) for n, (_, x) in enumerate(res.iterrows())])
     group_on_off = {k: "checked" if k in form_groups else "" for k in known_groups}
     return tmpl.render(
         colors=tab,
