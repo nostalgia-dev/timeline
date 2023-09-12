@@ -1,9 +1,10 @@
-from nostalgia.utils import load_entry
+from nostalgia import register_modules
 
 import json
 import time
 import os
 import numpy as np
+import pandas as pd
 from flask import Flask, request, make_response, redirect
 from flask_cors import CORS
 
@@ -67,7 +68,7 @@ def image():
 def root():
     global last, res
     if res is None:
-        load_entry()
+        register_modules()
         res = Results.merge(*[v for k, v in registry.items() if v.df_name != "results"])
     start = request.values.get("start")
     end = request.values.get("end")
@@ -134,6 +135,16 @@ def sample():
     return redirect("/")
 
 
+def safe_convert(x):
+    if isinstance(x, pd.Timestamp):
+        x = str(x)
+    if "int64" in str(type(x)):
+        x = int(x)
+    if "bool_" in str(type(x)):
+        x = bool(x)
+    return x
+
+
 @app.route("/info")
 def info():
     global last
@@ -142,7 +153,7 @@ def info():
         return None
     origin = last.get_original(int(index))
     return json.dumps(
-        {k: v for k, v in dict(origin).items() if not (isinstance(v, float) and np.isnan(v))},
+        {k: safe_convert(v) for k, v in dict(origin).items() if not (isinstance(v, float) and np.isnan(v))},
         indent=4,
     )
 

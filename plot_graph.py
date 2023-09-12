@@ -9,13 +9,9 @@ from nostalgia.utils import load_entry
 nostalgia_entry = load_entry()
 
 is_chat: set[str] = set()
-for x in dir(nostalgia_entry):
-    if x.startswith("__"):
-        continue
-    if x[0] == x[0].upper():
-        cls = getattr(nostalgia_entry, x)
-        if ChatInterface in cls.mro():
-            is_chat.add(cls.class_df_name())
+for cls in nostalgia_entry.modules:
+    if ChatInterface in cls.mro():
+        is_chat.add(cls.class_df_name())
 
 
 # tab = {
